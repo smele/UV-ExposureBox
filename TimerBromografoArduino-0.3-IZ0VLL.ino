@@ -1,5 +1,3 @@
-#include <LiquidCrystal_I2C.h>
-
 /*
 TIMER BROMOGRAFO ARDUINO
 
@@ -10,16 +8,13 @@ email: iz0victorlimalima@gmail.com
 Licenza GNU GPLv3
  */
 
-
-
+#include <LiquidCrystal_I2C.h>
 #include <EEPROM.h>
 #include <Wire.h>
-//#include <LiquidCrystal_I2C.h>
-LiquidCrystal_I2C lcd(0x27, 16, 2); // set the LCD address to 0x27 for a 16 chars and 2 line display
+LiquidCrystal_I2C lcd(0x27, 16, 2); // Imposta il Display all'indirizzo 0x27, 16x2 LCD
 
-#define encoder0PinA  2
-#define encoder0PinB  3
-
+#define encoder0PinA  2 // D2 Definisce il PRIMO canale dell'Encoder meccanico
+#define encoder0PinB  3 // D3 Definisce il SECONDO canale dell'Encoder meccanico
 
 volatile int encoder0Pos = 4;
 volatile boolean PastB = 0;
@@ -52,23 +47,19 @@ int secondi = 6;
 
 //---------  timer variabili
 
-int buzzer = 7;           //Piedino del Buzzer piezoelettrico, D7
+int buzzer = 7;           //D7 Piedino digitale del Buzzer piezoelettrico
 int rele = 6;             //D6 del relè di accensione dei neon
-int secondiTotali = 0;     //Tempo totale
+int secondiTotali = 0;    //Tempo totale
 int msg = 0;
 int reset = 0;
-int start = A6;            //Pulsante di avvio
+int start = A6;            //Pulsante di avvio (non usato)
 int empieza = 1024;        // Variabile per la memorizzazione del pulsante di avvio
-
 
 // assegnazione ingressi per i due pulsanti start e encoder
 int pushButton = 4;       //D4 Pulsante dell'Encoder
 int pushButtonSTART = 5;  //D5 Pulsante di Start del conteggio.
 
-
-
 int pushButtonSTARTstate = 0;
-
 
 int timeHOLD;
 int timeSEC = 0;
@@ -93,7 +84,6 @@ uint8_t testClessidra[8] = {0x1F, 0x11, 0x0A, 0x04, 0x04, 0x0E, 0x1F, 0x1F,};
   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 */
 
-
 void setup() {
 
   lcd.begin();
@@ -111,8 +101,6 @@ void setup() {
   int pushButtonSTARTstate = HIGH;   //  RESISTENZA PULL UP DEL PULSANTE  START
   attachInterrupt(1, doEncoderB, FALLING);
 
-
-
   // CARICAMENTO dei valori temporali (ore, minuti, secondi)
  
   lastencoderValue3 = EEPROM.read(1);
@@ -121,7 +109,6 @@ void setup() {
   encoderValue2 = EEPROM.read(2);
   lastencoderValue = EEPROM.read(3);
   encoderValue = EEPROM.read(3);
-
 
 // portare i resitori interni a pull up
 
@@ -136,7 +123,6 @@ void setup() {
   pinMode(buzzer, OUTPUT);  
   pinMode(rele, OUTPUT);   
 
-
  // presentazione iniziale
  
   lcd.clear();
@@ -149,11 +135,9 @@ void setup() {
   lcd.setCursor(0, 0);
   lcd.print("Vers. Firmware");
   lcd.setCursor(0, 1);
-  lcd.print("Beta 0.3");
+  lcd.print("Beta 0.4");
   delay(2000);
   lcd.clear();
-
-
 
   msg = 0;                
   empieza = 1024;           
@@ -182,22 +166,15 @@ void loop() {
   lcd.setCursor(0, 1);
   lcd.print((char)1);  // STAMPA LA CLESSIDRA
 
-
   if (update) {
     update = false;
     PastB ? encoder0Pos++ : encoder0Pos--;
-
-
   }
-
 
   //  ore minuti secondi
   ore = lastencoderValue;
   minuti = lastencoderValue2;
   secondi = lastencoderValue3;
-
-
-
 
   switch (step_funzione) {
     case 0:    // STATO INIZIALE
@@ -216,7 +193,6 @@ void loop() {
   }
 }
 
-
 //---------------------- ---------------------- ---------------------- ----------------------
 //---------------------- FUNZIONE: INIZIO ---------------------- ----------------------------
 //---------------------- ---------------------- ---------------------- ----------------------
@@ -225,7 +201,6 @@ void INIZIO() {
   lcd.setCursor(0, 0);
   lcd.print("   PREMI START  ");
   lcd.setCursor(0, 1);
-
 
   lcd.setCursor(4, 1);
   if (ore < 10) lcd.print("0");     // SE LE ORE SONO MENO DI 10, SCRIVI LO ZERO A SINISTRA.
@@ -238,8 +213,6 @@ void INIZIO() {
 
   if (secondi < 10) lcd.print("0");  // SE I SECONDI SONO MENO DI 10, SCRIVI LO ZERO A SINISTRA.
   lcd.print(secondi);                // STAMPA I SECONDI
-
-
 
   //  VAI A SETTA TEMPO - - - - - - - - - - - - - - - - - - -
 
